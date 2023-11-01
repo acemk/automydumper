@@ -15,7 +15,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -26,112 +26,90 @@
 # (Detailed instructions below variables)
 #=====================================================================
 #set -x
-CONFIGFILE="/etc/automysqlbackup/automysqlbackup.conf"
 
-if [ -r ${CONFIGFILE} ]; then
-	# Read the configfile if it's existing and readable
-	source ${CONFIGFILE}
-else
-	# do inline-config otherwise
-	# To create a configfile just copy the code between "### START CFG ###" and "### END CFG ###"
-	# to /etc/automysqlbackup/automysqlbackup.conf. After that you're able to upgrade this script
-	# (copy a new version to its location) without the need for editing it.
-	### START CFG ###
-	# Username to access the MySQL server e.g. dbuser
-	USERNAME=debian
-	
-	# Password to access the MySQL server e.g. password
-	PASSWORD=
-	
-	# Host name (or IP address) of MySQL server e.g localhost
-	DBHOST=localhost
-	
-	# List of DBNAMES for Daily/Weekly Backup e.g. "DB1 DB2 DB3"
-	DBNAMES="all"
-	
-	# Backup directory location e.g /backups
-	BACKUPDIR="/srv/backup/db"
-	
-	# Mail setup
-	# What would you like to be mailed to you?
-	# - log   : send only log file
-	# - files : send log file and sql files as attachments (see docs)
-	# - stdout : will simply output the log to the screen if run manually.
-	# - quiet : Only send logs if an error occurs to the MAILADDR.
-	MAILCONTENT="log"
-	
-	# Set the maximum allowed email size in k. (4000 = approx 5MB email [see docs])
-	MAXATTSIZE="4000"
-	
-	# Email Address to send mail to? (user@domain.com)
-	MAILADDR="maintenance@example.com"
-	
-	
-	# ============================================================
-	# === ADVANCED OPTIONS ( Read the doc's below for details )===
-	#=============================================================
-	
-	# List of DBBNAMES for Monthly Backups.
-	MDBNAMES="${DBNAMES}"
-	
-	# List of DBNAMES to EXLUCDE if DBNAMES are set to all (must be in " quotes)
-	DBEXCLUDE=""
-	
-	# Include CREATE DATABASE in backup?
-	CREATE_DATABASE=no
-	
-	# Separate backup directory and file for each DB? (yes or no)
-	SEPDIR=yes
-	
-	# Which day do you want weekly backups? (1 to 7 where 1 is Monday)
-	DOWEEKLY=6
-	
-	# Choose Compression type. (gzip or bzip2)
-	COMP=gzip
-	
-	# Compress communications between backup server and MySQL server?
-	COMMCOMP=no
-	
-	# Additionally keep a copy of the most recent backup in a seperate directory.
-	LATEST=no
-	
-	#  The maximum size of the buffer for client/server communication. e.g. 16MB (maximum is 1GB)
-	MAX_ALLOWED_PACKET=
-	
-	#  For connections to localhost. Sometimes the Unix socket file must be specified.
-	SOCKET=
-	
-	# Use mydumper istead of mysqldump. Used only when SEPDIR=yes
-	MYDUMPER_USE='yes'
+# Use environment variables
+# USERNAME - Username to access the MySQL server e.g. dbuser
+# PASSWORD - Password to access the MySQL server e.g. password
+# DBHOST - Host name (or IP address) of MySQL server e.g localhost
+# DBNAMES="all" - List of DBNAMES for Daily/Weekly Backup e.g. "DB1 DB2 DB3"
 
-	MYDUMPER_COMPRESS='yes'
+# Backup directory location e.g /backups
+BACKUPDIR="/srv/backup/db"
 
-	MYDUMPER_NO_LOCKS='yes'
+# Mail setup
+# What would you like to be mailed to you?
+# - log   : send only log file
+# - files : send log file and sql files as attachments (see docs)
+# - stdout : will simply output the log to the screen if run manually.
+# - quiet : Only send logs if an error occurs to the MAILADDR.
+# MAILCONTENT="log"
 
-	MYDUMPER_THREADS=4
+# MAXATTSIZE - Set the maximum allowed email size in k. (4000 = approx 5MB email [see docs])
 
-	# Set umask
-	# Uncomment to activate! This will give folders rwx------
-	# and files rw------- permissions.                       
-	SET_UMASK=0077                                              
-  	
-    # Set rotation of daily backups. VALUE*24hours
-    # If you want to keep only today's backups, you could choose 1, i.e. everything older than 24hours will be removed.
-    ROTATION_DAILY=6
 
-    # Set rotation for weekly backups. VALUE*24hours
-    ROTATION_WEEKLY=35
+# MAILADDR - Email Address to send mail to? (user@domain.com)
 
-    # Set rotation for monthly backups. VALUE*24hours
-    ROTATION_MONTHLY=150
 
-	# Command to run before backups (uncomment to use)
-	#PREBACKUP="/etc/mysql-backup-pre"
-	
-	# Command run after backups (uncomment to use)
-	#POSTBACKUP="/etc/mysql-backup-post"
-	### END CFG ###
-fi
+# ============================================================
+# === ADVANCED OPTIONS ( Read the doc's below for details )===
+#=============================================================
+
+# List of DBBNAMES for Monthly Backups.
+MDBNAMES="${DBNAMES}"
+
+# List of DBNAMES to EXLUCDE if DBNAMES are set to all (must be in " quotes)
+DBEXCLUDE=""
+
+# Include CREATE DATABASE in backup?
+CREATE_DATABASE=no
+
+# Separate backup directory and file for each DB? (yes or no)
+SEPDIR=yes
+
+# Which day do you want weekly backups? (1 to 7 where 1 is Monday)
+DOWEEKLY=6
+
+# Choose Compression type. (gzip or bzip2)
+COMP=gzip
+
+# Compress communications between backup server and MySQL server?
+COMMCOMP=no
+
+# Additionally keep a copy of the most recent backup in a seperate directory.
+LATEST=no
+
+#  The maximum size of the buffer for client/server communication. e.g. 16MB (maximum is 1GB)
+MAX_ALLOWED_PACKET=
+
+#  For connections to localhost. Sometimes the Unix socket file must be specified.
+SOCKET=
+
+# Use mydumper istead of mysqldump. Used only when SEPDIR=yes
+MYDUMPER_USE='yes'
+
+MYDUMPER_COMPRESS='yes'
+
+MYDUMPER_NO_LOCKS='yes'
+
+MYDUMPER_THREADS=4
+
+# Set umask
+# Uncomment to activate! This will give folders rwx------
+# and files rw------- permissions.
+SET_UMASK=0077
+
+# Set rotation of daily backups. VALUE*24hours
+# ROTATION_DAILY=6 - If you want to keep only today's backups, you could choose 1, i.e. everything older than 24hours will be removed.
+# ROTATION_WEEKLY=35 - Set rotation for weekly backups. VALUE*24hours
+# ROTATION_MONTHLY=150 - Set rotation for monthly backups. VALUE*24hours
+
+
+# Command to run before backups (uncomment to use)
+#PREBACKUP="/etc/mysql-backup-pre"
+
+# Command run after backups (uncomment to use)
+#POSTBACKUP="/etc/mysql-backup-post"
+
 
 #=====================================================================
 # Options documantation
@@ -167,7 +145,7 @@ fi
 # email addresses in a space seperated list.
 # (If you set mail content to "log" you will require access to the "mail" program
 # on your server. If you set this to "files" you will have to have mutt installed
-# on your server. If you set it to "stdout" it will log to the screen if run from 
+# on your server. If you set it to "stdout" it will log to the screen if run from
 # the console or to the cron job owner if run through cron. If you set it to "quiet"
 # logs will only be mailed if there are errors reported. )
 #
@@ -179,7 +157,7 @@ fi
 # Finally copy automysqlbackup.sh to anywhere on your server and make sure
 # to set executable permission. You can also copy the script to
 # /etc/cron.daily to have it execute automatically every night or simply
-# place a symlink in /etc/cron.daily to the file if you wish to keep it 
+# place a symlink in /etc/cron.daily to the file if you wish to keep it
 # somwhere else.
 # NOTE:On Debian copy the file with no extention for it to be run
 # by cron e.g just name the file "automysqlbackup"
@@ -199,7 +177,7 @@ fi
 #
 # If you set DBNAMES="all" you can configure the option DBEXCLUDE. Other
 # wise this option will not be used.
-# This option can be used if you want to backup all dbs, but you want 
+# This option can be used if you want to backup all dbs, but you want
 # exclude some of them. (eg. a db is to big).
 #
 # Set CREATE_DATABASE to "yes" (the default) if you want your SQL-Dump to create
@@ -224,7 +202,7 @@ fi
 #
 # COMMCOMP is used to enable or diable mysql client to server compression, so
 # it is useful to save bandwidth when backing up a remote MySQL server over
-# the network. 
+# the network.
 #
 # LATEST is to store an additional copy of the latest backup to a standard
 # location so it can be downloaded bt thrid party scripts.
@@ -259,7 +237,7 @@ fi
 #
 # I take no resposibility for any data loss or corruption when using
 # this script..
-# This script will not help in the event of a hard drive crash. If a 
+# This script will not help in the event of a hard drive crash. If a
 # copy of the backup has not be stored offline or on another PC..
 # You should copy your backups offline regularly for best protection.
 #
@@ -335,7 +313,7 @@ function get_debian_pw() {
 	fi
 }
 
-[ "x${USERNAME}" = "xdebian" -a "x${PASSWORD}" = "x" ] && get_debian_pw 
+[ "x${USERNAME}" = "xdebian" -a "x${PASSWORD}" = "x" ] && get_debian_pw
 
 while [ $# -gt 0 ]; do
 	case $1 in
@@ -466,7 +444,7 @@ else
 fi
 if [ "${LATEST}" = "yes" ]; then
 	${CP} -avl ${1}${SUFFIX} "${BACKUPDIR}/latest/"
-fi	
+fi
 return 0
 }
 
@@ -516,11 +494,11 @@ if [ "${DBNAMES}" = "all" ]; then
 
         MDBNAMES=${DBNAMES}
 fi
-	
+
 ${ECHO} "======================================================================"
 ${ECHO} "AutoMySQLBackup VER ${VER}"
 ${ECHO} "http://sourceforge.net/projects/automysqlbackup/"
-${ECHO} 
+${ECHO}
 ${ECHO} "Backup of Database Server - ${HOST}"
 ${ECHO} "======================================================================"
 ${ECHO}
@@ -534,7 +512,7 @@ ${ECHO} "======================================================================"
 	if [ ${DOM} = "01" ]; then
 		for MDB in ${MDBNAMES}
 		do
- 
+
 			 # Prepare ${DB} for using
 		        MDB="`${ECHO} ${MDB} | ${SED} 's/%/ /g'`"
 
@@ -554,7 +532,7 @@ ${ECHO} "======================================================================"
                 fi
 				[ $? -eq 0 ] && {
 					${ECHO} "Rotating 5 month backups for ${MDB}"
-					${FIND} "${BACKUPDIR}/monthly/${MDB}" -mtime +${ROTATION_MONTHLY} -type f -exec ${RM} -v {} \; 
+					${FIND} "${BACKUPDIR}/monthly/${MDB}" -mtime +${ROTATION_MONTHLY} -type f -exec ${RM} -v {} \;
 				}
                 if [ "$MYDUMPER_USE" = 'yes' ]; then
 				    BACKUPFILES="${BACKUPFILES} ${BACKUPDIR}/monthly/${MDB}/${MDB}_${DATE}.${M}.${MDB}"
@@ -570,18 +548,18 @@ ${ECHO} "======================================================================"
 	do
 	# Prepare ${DB} for using
 	DB="`${ECHO} ${DB} | ${SED} 's/%/ /g'`"
-	
+
 	# Create Seperate directory for each DB
 	if [ ! -e "${BACKUPDIR}/daily/${DB}" ]		# Check Daily DB Directory exists.
 		then
 		mkdir -p "${BACKUPDIR}/daily/${DB}"
 	fi
-	
+
 	if [ ! -e "${BACKUPDIR}/weekly/${DB}" ]		# Check Weekly DB Directory exists.
 		then
 		mkdir -p "${BACKUPDIR}/weekly/${DB}"
 	fi
-	
+
 	# Weekly Backup
 	if [ ${DNOW} = ${DOWEEKLY} ]; then
 		${ECHO} "Weekly Backup of Database ( ${DB} )"
@@ -590,14 +568,14 @@ ${ECHO} "======================================================================"
                 if [ ! -e "${BACKUPDIR}/weekly/${DB}/${DB}_week.${W}.${DATE}" ]       # Check Database backup directory exists.
                 then
                     mkdir -p "${BACKUPDIR}/weekly/${DB}/${DB}_week.${W}.${DATE}"
-                fi   
+                fi
 			    dbdump "${DB}" "${BACKUPDIR}/weekly/${DB}/${DB}_week.${W}.${DATE}"
             else
                 dbdump "${DB}" "${BACKUPDIR}/weekly/${DB}/${DB}_week.${W}.${DATE}.sql"
             fi
 			[ $? -eq 0 ] && {
 				${ECHO} "Rotating 5 weeks Backups..."
-				${FIND} "${BACKUPDIR}/weekly/${DB}" -mtime +${ROTATION_WEEKLY} -type f -exec ${RM} -v {} \; 
+				${FIND} "${BACKUPDIR}/weekly/${DB}" -mtime +${ROTATION_WEEKLY} -type f -exec ${RM} -v {} \;
 			}
             if [ "$MYDUMPER_USE" = 'yes' ]; then
 			    BACKUPFILES="${BACKUPFILES} ${BACKUPDIR}/weekly/${DB}/${DB}_week.${W}.${DATE}"
@@ -606,7 +584,7 @@ ${ECHO} "======================================================================"
                 BACKUPFILES="${BACKUPFILES} ${BACKUPDIR}/weekly/${DB}/${DB}_week.${W}.${DATE}.sql${SUFFIX}"
             fi
 		${ECHO} "----------------------------------------------------------------------"
-	
+
 	# Daily Backup
 	else
 		${ECHO} "Daily Backup of Database ( ${DB} )"
@@ -615,14 +593,14 @@ ${ECHO} "======================================================================"
                 if [ ! -e "${BACKUPDIR}/daily/${DB}/${DB}_${DATE}.${DOW}" ]       # Check Database backup directory exists.
                 then
                     mkdir -p "${BACKUPDIR}/daily/${DB}/${DB}_${DATE}.${DOW}"
-                fi 
+                fi
 			    dbdump "${DB}" "${BACKUPDIR}/daily/${DB}/${DB}_${DATE}.${DOW}"
             else
                 dbdump "${DB}" "${BACKUPDIR}/daily/${DB}/${DB}_${DATE}.${DOW}.sql"
             fi
 			[ $? -eq 0 ] && {
 				${ECHO} "Rotating last weeks Backup..."
-				${FIND} "${BACKUPDIR}/daily/${DB}" -mtime +${ROTATION_DAILY} -type f -exec ${RM} -v {} \; 
+				${FIND} "${BACKUPDIR}/daily/${DB}" -mtime +${ROTATION_DAILY} -type f -exec ${RM} -v {} \;
 			}
             if [ "$MYDUMPER_USE" = 'yes' ]; then
 			    BACKUPFILES="${BACKUPFILES} ${BACKUPDIR}/daily/${DB}/${DB}_${DATE}.${DOW}"
@@ -646,7 +624,7 @@ ${ECHO} "======================================================================"
 			dbdump "${MDBNAMES}" "${BACKUPDIR}/monthly/${DATE}.${M}.all-databases.sql"
 			[ $? -eq 0 ] && {
 				${ECHO} "Rotating 5 month backups."
-				${FIND} "${BACKUPDIR}/monthly" -mtime +150 -type f -exec ${RM} -v {} \; 
+				${FIND} "${BACKUPDIR}/monthly" -mtime +150 -type f -exec ${RM} -v {} \;
 			}
 			compression "${BACKUPDIR}/monthly/${DATE}.${M}.all-databases.sql"
 			BACKUPFILES="${BACKUPFILES} ${BACKUPDIR}/monthly/${DATE}.${M}.all-databases.sql${SUFFIX}"
@@ -661,12 +639,12 @@ ${ECHO} "======================================================================"
 			dbdump "${DBNAMES}" "${BACKUPDIR}/weekly/week.${W}.${DATE}.sql"
 			[ $? -eq 0 ] && {
 				${ECHO} Rotating 5 weeks Backups...
-				${FIND} "${BACKUPDIR}/weekly/" -mtime +35 -type f -exec ${RM} -v {} \; 
+				${FIND} "${BACKUPDIR}/weekly/" -mtime +35 -type f -exec ${RM} -v {} \;
 			}
 			compression "${BACKUPDIR}/weekly/week.${W}.${DATE}.sql"
 			BACKUPFILES="${BACKUPFILES} ${BACKUPDIR}/weekly/week.${W}.${DATE}.sql${SUFFIX}"
 		${ECHO} "----------------------------------------------------------------------"
-		
+
 	# Daily Backup
 	else
 		${ECHO} "Daily Backup of Databases ( ${DBNAMES} )"
@@ -675,7 +653,7 @@ ${ECHO} "======================================================================"
 			dbdump "${DBNAMES}" "${BACKUPDIR}/daily/${DATE}.${DOW}.sql"
 			[ $? -eq 0 ] && {
 				${ECHO} Rotating last weeks Backup...
-				${FIND} "${BACKUPDIR}/daily" -mtime +6 -type f -exec ${RM} -v {} \; 
+				${FIND} "${BACKUPDIR}/daily" -mtime +6 -type f -exec ${RM} -v {} \;
 			}
 			compression "${BACKUPDIR}/daily/${DATE}.${DOW}.sql"
 			BACKUPFILES="${BACKUPFILES} ${BACKUPDIR}/daily/${DATE}.${DOW}.sql${SUFFIX}"
@@ -731,7 +709,7 @@ then
 	if [ -s "${LOGERR}" ]
 		then
 			${CAT} "${LOGERR}" | mail -s "ERRORS REPORTED: MySQL Backup error Log for ${HOST} - ${DATE}" ${MAILADDR}
-	fi	
+	fi
 elif [ "${MAILCONTENT}" = "quiet" ]
 then
 	if [ -s "${LOGERR}" ]
@@ -750,7 +728,7 @@ else
 			${CAT} "${LOGERR}"
 	else
 		${CAT} "${LOGFILE}"
-	fi	
+	fi
 fi
 
 if [ -s "${LOGERR}" ]

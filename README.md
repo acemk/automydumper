@@ -2,10 +2,12 @@
 
 Dockerfile for creating a Docker image that uses [AutoMySQLBackup-mydumper](https://github.com/tyzhnenko/AutoMySQLBackup-mydumper) to backup MySQL databases.
 
+- Author: Ace Dimitrievski
+
 ## Image Details
 
 - Base Image: Ubuntu 22.04
-- Author: Ace Dimitrievski
+- Additional files: automysqlbackup.sh, entrypoint.sh
 
 ## Usage
 
@@ -24,10 +26,13 @@ This Docker image includes a volume at `/srv/backup/db`. You can mount this volu
 - `MAILADDR`: Email address for notifications.
 - `MAILCONTENT`: Backup email content type (default: log).
 - `MAXATTSIZE`: Maximum email attachment size (default: 4000).
+- `ROTATION_DAILY`: Duration to keep *daily* backups (VALUE*24hours) (default: 6).
+- `ROTATION_WEEKLY`: Duration to keep *weekly* backups (VALUE*24hours) (default: 35). 
+- `ROTATION_MONTHLY`: Duration to keep *monthly* backups (VALUE*24hours) (default: 150)
 
 ## Logs
 
-Backup logs are stored in the root of the volume mount point with filenames generated based on the hostname and timestamp with nanoseconds precision. For example, a log filename may appear as "mysql.myorg.org-094847951.log," where "mysql.myorg.org" represents the hostname, and "094847951" is the timestamp.
+Backup logs are stored in the root of the volume mount point with filenames generated based on the hostname and timestamp. For example, a log filename may appear as "mysql.myorg.org-2023-10-31_11h03m.log," where "mysql.myorg.org" represents the hostname, and "2023-10-31_11h03m" is the timestamp.
 
 - `LOGFILE`: Contains detailed backup information.
 - `LOGERR`: Contains error logs, prefixed with "ERRORS_."
@@ -40,3 +45,7 @@ These logs provide insights into the backup process and any encountered errors.
 docker build -t automydumper .
 docker run -e DBHOST=mydb.myorg.org -e PASSWORD=my_strong_password -v /my/local/backup/path:/srv/backup/db automydumper
 ```
+
+## Changelog
+
+- `0.2`: (AD) Removed anytomysqlbackup.conf file and using environment variables in automysqlbackup.sh. Added ROTATION_DAILY, ROTATION_WEEKLY, ROTATION_MONTHLY environment variables.
